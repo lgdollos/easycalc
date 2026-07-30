@@ -1,0 +1,190 @@
+/* Shared twin-plots interactive UI (used by chapter embed + standalone page). */
+
+.tp-hint-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0 0 0.55rem;
+}
+
+.tp-hint {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+
+.tp-table-wrap {
+  margin: 1.1rem 0 1.85rem;
+  overflow: visible;
+  padding-bottom: 1.85rem;
+}
+
+.tp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.tp-table th,
+.tp-table td {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid rgba(10, 10, 10, 0.22);
+  font-weight: 400;
+}
+
+.tp-table th:first-child {
+  text-align: left;
+  font-style: italic;
+  width: 2.75rem;
+  background: var(--paper-figure);
+}
+
+.tp-col {
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.tp-col:hover,
+.tp-col:focus-visible {
+  outline: none;
+}
+
+.tp-col.is-active {
+  background: var(--accent-highlight);
+}
+
+.tp-col-d {
+  position: relative;
+}
+
+.tp-d-tip {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 0.35rem);
+  transform: translateX(-50%);
+  z-index: 2;
+  white-space: nowrap;
+  padding: 0.2rem 0.45rem;
+  font-size: 0.72rem;
+  line-height: 1.3;
+  color: var(--accent);
+  background: var(--paper);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  box-sizing: border-box;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 120ms ease,
+    visibility 120ms ease;
+}
+
+.tp-col-d.is-active .tp-d-tip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tp-d-tip::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-bottom-color: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.tp-plots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 1rem 0 1.15rem;
+}
+
+.tp-fig {
+  margin: 0;
+  position: relative;
+  background: var(--paper-figure);
+  border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  padding: 0.4rem 0.4rem 0.5rem;
+  overflow: visible;
+}
+
+.tp-fig23-slot,
+.tp-fig24-slot {
+  position: relative;
+}
+
+.tp-plot-interactive {
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.tp-hit-dot {
+  pointer-events: all;
+}
+
+.tp-fig-label {
+  margin: 0 0 0.3rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.tp-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.tp-math-label {
+  overflow: visible;
+  pointer-events: none;
+}
+
+.tp-math-label-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--ink);
+  background: transparent;
+  pointer-events: none;
+}
+
+.tp-math-label-inner .katex {
+  font-size: 0.92em;
+}
+
+.tp-punch {
+  margin-top: 0.25rem;
+}
+
+.tp-readout {
+  margin: 0 0 1.25rem;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+  background: var(--paper-figure);
+  border-left: 2px solid var(--accent);
+  min-height: 1.5em;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 720px) {
+  .tp-plots {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tp-col,
+  .tp-d-tip {
+    transition: none;
+  }
+}

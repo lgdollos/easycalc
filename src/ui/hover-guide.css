@@ -1,0 +1,58 @@
+.has-hover-guide {
+  position: relative;
+}
+
+.hover-guide {
+  position: absolute;
+  top: -0.4rem;
+  left: -0.4rem;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.34rem 0.5rem 0.34rem 0.4rem;
+  border-radius: 999px;
+  background: #f8f5ef;
+  color: #7a6a56;
+  border: none;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  opacity: 1;
+}
+
+/* Fully above the host’s top-left corner (e.g. panel-grid border). */
+.hover-guide--outside-top-left {
+  top: 0;
+  left: 0;
+  transform: translate(-0.15rem, calc(-100% - 0.35rem));
+}
+
+/* Centered on the host’s bottom border (e.g. .sm-header rule). */
+.hover-guide--on-bottom-left-edge {
+  top: 100%;
+  left: 0;
+  transform: translate(-0.15rem, -50%);
+}
+
+.hover-guide--inline {
+  position: static;
+  flex-shrink: 0;
+  transform: none;
+}
+
+.hover-guide-icon {
+  display: block;
+  width: 1.05rem;
+  height: 1.05rem;
+  flex-shrink: 0;
+}
+
+.hover-guide-label {
+  display: block;
+}

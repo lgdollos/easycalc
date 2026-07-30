@@ -1,0 +1,776 @@
+@import "./tokens.css";
+@import "./twinPlots/twin-plots-ui.css";
+@import "./slopeMorph/slope-morph-ui.css";
+
+:root {
+  --panel-rule: rgba(10, 10, 10, 0.05);
+  --panel-rule-width: 1px;
+  --panel-dim-opacity: 0.2;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 15px;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body-font);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  max-width: 74rem;
+  margin: 0 auto;
+  padding: 2.25rem 1.5rem 3.5rem;
+}
+
+.site-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.site-header h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.18rem;
+  font-weight: 400;
+  font-style: normal;
+  font-family: var(--display-font);
+  letter-spacing: 0.01em;
+  text-align: center;
+}
+
+.site-header p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  text-align: center;
+  line-height: 1.65;
+}
+
+.site-header cite {
+  font-style: italic;
+}
+
+.opening-copy {
+  width: min(44rem, 100%);
+  margin: 0 auto 2rem;
+  font-size: 1.08rem;
+  line-height: 1.68;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.opening-copy p {
+  margin: 0 0 0.85rem;
+}
+
+.panel-body .math,
+.site-footer .math,
+.opening-copy .math,
+.chapter-copy .math,
+.slope-morph-section .math {
+  display: inline-block;
+  margin: 0 0.06em;
+  vertical-align: middle;
+}
+
+.opening-copy .math,
+.chapter-copy .math,
+.slope-morph-section .math {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.45em;
+}
+
+.site-footer .math {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.65em;
+}
+
+.opening-copy .katex,
+.chapter-copy .katex,
+.slope-morph-section .katex,
+.twin-plots-interactive .katex {
+  color: var(--ink);
+}
+
+@media (max-width: 760px) {
+  .opening-copy,
+  .chapter-copy {
+    font-size: 1rem;
+    text-align: left;
+  }
+}
+
+.site-footer {
+  margin-top: 2.25rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  font-family: inherit;
+  text-align: justify;
+  hyphens: auto;
+  line-height: 1.65;
+}
+
+.site-footer a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.site-footer a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.site-footer .katex {
+  color: var(--ink);
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.panel-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--panel-rule-width);
+  background: var(--panel-rule);
+  border: var(--panel-rule-width) solid var(--panel-rule);
+  position: relative;
+  overflow: visible;
+  z-index: 1;
+}
+
+@media (max-width: 1100px) {
+  .panel-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .panel-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel-grid.panel-grid--enter-prep {
+  --panel-enter-duration: 0.48s;
+  --panel-enter-offset-y: -12px;
+}
+
+.panel-grid.panel-grid--enter-prep:not(.panel-grid--entered) .panel[data-panel] {
+  opacity: 0;
+  transform: translateY(var(--panel-enter-offset-y));
+  transition-duration: 0s;
+  transition-delay: 0s;
+}
+
+.panel {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 2fr);
+  background: var(--paper);
+  min-height: 22rem;
+  overflow: visible;
+}
+
+.panel[data-panel] {
+  --panel-motion-dur: 0.22s;
+  --panel-motion-ease: ease;
+  opacity: 1;
+  scroll-margin-top: 0.5rem;
+  transition:
+    opacity var(--panel-motion-dur) var(--panel-motion-ease) var(--panel-enter-delay, 0ms),
+    transform var(--panel-motion-dur) var(--panel-motion-ease) var(--panel-enter-delay, 0ms);
+}
+
+.panel-grid.panel-grid--enter-prep .panel[data-panel] {
+  --panel-motion-dur: var(--panel-enter-duration);
+  --panel-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.panel-grid:has(.panel:hover)
+  .panel[data-panel]:not(:hover)
+  > :is(.panel-text, .panel-figure) {
+  opacity: var(--panel-dim-opacity);
+}
+
+.panel[data-panel] > :is(.panel-text, .panel-figure) {
+  opacity: 1;
+  transition: opacity 0.22s ease;
+}
+
+.panel-text {
+  padding: 0.45rem 0.65rem 0.4rem;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.panel-title {
+  margin: 0 0 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 400;
+  font-family: var(--display-font);
+  font-variant: all-small-caps;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  text-align: center;
+}
+
+.panel-title-num {
+  font-size: 1.3em;
+  font-variant: normal;
+  margin-right: 0.25rem;
+}
+
+.panel-body {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--ink);
+  text-align: left;
+  line-height: 1.45;
+}
+
+.panel-body p {
+  margin: 0;
+}
+
+.panel-body em {
+  font-style: italic;
+}
+
+
+.panel-body .math:not(.math-fig-q):not(.math-fig-proj-x):not(.math-fig-proj-y):not(.math-fig-dx):not(.math-fig-dy) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.45em;
+}
+
+.panel-body .math.math-fig-q,
+.panel-body .math.math-fig-proj-x,
+.panel-body .math.math-fig-proj-y {
+  cursor: pointer;
+  vertical-align: baseline;
+  position: relative;
+  padding: 0 0.1em 0.16em;
+  margin: 0 0.04em;
+  border-radius: 0.15em;
+  transition: background-color 0.15s ease;
+}
+
+.panel-body .math.math-fig-dx,
+.panel-body .math.math-fig-dy {
+  cursor: pointer;
+  vertical-align: middle;
+  position: relative;
+  padding: 0 0.1em 0.16em;
+  margin: 0 0.04em;
+  border-radius: 0.15em;
+  transition: background-color 0.15s ease;
+}
+
+.panel-body .math.math-fig-q::after,
+.panel-body .math.math-fig-proj-x::after,
+.panel-body .math.math-fig-proj-y::after,
+.panel-body .math.math-fig-dx::after,
+.panel-body .math.math-fig-dy::after {
+  content: "";
+  position: absolute;
+  left: 0.06em;
+  right: 0.06em;
+  bottom: 0.05em;
+  height: 0;
+  border-bottom: 1px dotted var(--accent);
+  pointer-events: none;
+}
+
+.panel-body .math.math-fig-dx::after,
+.panel-body .math.math-fig-dy::after {
+  transform-origin: center bottom;
+  animation: panel-fig-math-underline-in 0.5s ease-out forwards;
+}
+
+@keyframes panel-fig-math-underline-in {
+  from {
+    opacity: 0;
+    transform: scaleX(0.35);
+  }
+
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+.panel-body .math.math-fig-q .katex,
+.panel-body .math.math-fig-proj-x .katex,
+.panel-body .math.math-fig-proj-y .katex {
+  vertical-align: baseline;
+}
+
+.panel-body .math.math-fig-dx .katex,
+.panel-body .math.math-fig-dy .katex {
+  vertical-align: middle;
+}
+
+.panel-body .math.math-fig-q:hover,
+.panel-body .math.math-fig-proj-x:hover,
+.panel-body .math.math-fig-proj-y:hover,
+.panel-body .math.math-fig-dx:hover,
+.panel-body .math.math-fig-dy:hover {
+  background-color: var(--accent-highlight);
+}
+
+.panel-body .panel-fig-kw {
+  cursor: pointer;
+  vertical-align: baseline;
+  position: relative;
+  padding: 0 0.1em 0.16em;
+  margin: 0 0.04em;
+  border-radius: 0.15em;
+  transition: background-color 0.15s ease;
+}
+
+.panel-body .panel-fig-kw::after {
+  content: "";
+  position: absolute;
+  left: 0.06em;
+  right: 0.06em;
+  bottom: 0.05em;
+  height: 0;
+  border-bottom: 1px dotted var(--accent);
+  pointer-events: none;
+  transform-origin: center bottom;
+  animation: panel-fig-math-underline-in 0.5s ease-out forwards;
+}
+
+.panel-body .panel-fig-kw:hover,
+.panel-body .panel-fig-kw:focus-visible {
+  background-color: var(--accent-highlight);
+}
+
+.panel-body .panel-fig-kw:focus {
+  outline: none;
+}
+
+.panel-body .panel-fig-kw-straight {
+  display: inline-block;
+  vertical-align: baseline;
+  padding-bottom: 0.2em;
+}
+
+.panel-body .panel-fig-kw-straight .katex {
+  vertical-align: baseline;
+}
+
+.panel-body .panel-fig-kw-straight::after {
+  bottom: 0.08em;
+}
+
+.panel:has(.panel-fig-kw-straight) .fig-secant {
+  transition: stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+.panel:has(.panel-fig-kw-straight) .fig-point-q,
+.panel:has(.panel-fig-kw-straight) .fig-label-q,
+.panel:has(.panel-fig-kw-straight) .fig-point-t,
+.panel:has(.panel-fig-kw-straight) .fig-label-t {
+  transition: fill 0.2s ease;
+}
+
+.panel:has(.panel-fig-kw-straight:hover, .panel-fig-kw-straight:focus-visible) .fig-secant {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+
+.panel:has(.panel-fig-kw-straight:hover, .panel-fig-kw-straight:focus-visible) .fig-point-q,
+.panel:has(.panel-fig-kw-straight:hover, .panel-fig-kw-straight:focus-visible) .fig-label-q,
+.panel:has(.panel-fig-kw-straight:hover, .panel-fig-kw-straight:focus-visible) .fig-point-t,
+.panel:has(.panel-fig-kw-straight:hover, .panel-fig-kw-straight:focus-visible) .fig-label-t {
+  fill: var(--accent);
+}
+
+/* KaTeX \\dfrac is tall; inline box was too short so ::after crossed “dx”. */
+.panel-body .panel-fig-kw-dydx {
+  display: inline-block;
+  vertical-align: 0.11em;
+  padding: 0 0.1em 0.46em;
+}
+
+.panel-body .panel-fig-kw-dydx .katex {
+  vertical-align: baseline;
+}
+
+.panel-body .panel-fig-kw-dydx::after {
+  left: 0.08em;
+  right: 0.08em;
+  bottom: 0.1em;
+}
+
+.panel:has(.panel-fig-kw-dydx) .fig-secant,
+.panel:has(.panel-fig-kw-dydx) .fig-label-dx,
+.panel:has(.panel-fig-kw-dydx) .fig-label-dy,
+.panel:has(.panel-fig-kw-dydx) .fig-dydx-fraction-bar {
+  transition: stroke 0.2s ease, stroke-width 0.2s ease, fill 0.2s ease;
+}
+
+.panel:has(.panel-fig-kw-dydx:hover, .panel-fig-kw-dydx:focus-visible) .fig-secant {
+  stroke: var(--accent);
+}
+
+.panel:has(.panel-fig-kw-dydx:hover, .panel-fig-kw-dydx:focus-visible) .fig-label-dx,
+.panel:has(.panel-fig-kw-dydx:hover, .panel-fig-kw-dydx:focus-visible) .fig-label-dy {
+  fill: var(--accent);
+}
+
+.panel:has(.panel-fig-kw-dydx:hover, .panel-fig-kw-dydx:focus-visible) .fig-dydx-fraction-bar {
+  stroke: var(--accent);
+}
+
+.panel-body .panel-fig-kw-line-qt {
+  display: inline-block;
+  vertical-align: 0.04em;
+  padding: 0 0.1em 0.22em;
+}
+
+.panel-body .panel-fig-kw-line-qt .katex {
+  vertical-align: baseline;
+}
+
+.panel-body .panel-fig-kw-line-qt::after {
+  left: 0.08em;
+  right: 0.08em;
+  bottom: 0.08em;
+  /* Wider than math-only keywords; center origin made scaleX look like it sat under mid-phrase. */
+  transform-origin: left bottom;
+}
+
+.panel:has(.panel-fig-kw-line-qt) .fig-secant-produced-part {
+  transition: stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+.panel:has(.panel-fig-kw-line-qt:hover, .panel-fig-kw-line-qt:focus-visible) .fig-secant-produced-part {
+  stroke: var(--accent);
+  stroke-width: 1.35;
+}
+
+.panel-body .panel-fig-kw-touch {
+  display: inline-block;
+  vertical-align: baseline;
+  padding: 0 0.06em 0.18em;
+}
+
+.panel-body .panel-fig-kw-touch .katex {
+  vertical-align: baseline;
+}
+
+.panel-body .panel-fig-kw-touch::after {
+  left: 0.06em;
+  right: 0.06em;
+  bottom: 0.07em;
+}
+
+.panel:has(.panel-fig-kw-touch) .fig-secant-produced-part,
+.panel:has(.panel-fig-kw-touch) .fig-secant-limit,
+.panel:has(.panel-fig-kw-touch) .fig-dx,
+.panel:has(.panel-fig-kw-touch) .fig-dy,
+.panel:has(.panel-fig-kw-touch) .fig-point-q,
+.panel:has(.panel-fig-kw-touch) .fig-label-q,
+.panel:has(.panel-fig-kw-touch) .fig-point-t,
+.panel:has(.panel-fig-kw-touch) .fig-label-t,
+.panel:has(.panel-fig-kw-touch) .fig-label-dx0 {
+  transition: stroke 0.2s ease, stroke-width 0.2s ease, fill 0.2s ease;
+}
+
+.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-secant-produced-part,
+.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-secant-limit,
+.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-dx,
+.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-dy {
+  stroke: var(--accent);
+  stroke-width: 1.35;
+}
+
+.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-point-q,
+.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-label-q,
+.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-point-t,
+.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-label-t,
+.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-label-dx0 {
+  fill: var(--accent);
+}
+
+.panel-body .panel-fig-kw-slope-tangent {
+  display: inline;
+  vertical-align: baseline;
+  padding: 0 0.06em 0.14em;
+}
+
+.panel-body .panel-fig-kw-slope-tangent::after {
+  left: 0.06em;
+  right: 0.06em;
+  bottom: 0.06em;
+}
+
+.panel:has(.panel-fig-kw-slope-tangent) .fig-point-q,
+.panel:has(.panel-fig-kw-slope-tangent) .fig-label-q,
+.panel:has(.panel-fig-kw-slope-tangent) .fig-tangent {
+  transition: fill 0.2s ease, stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+.panel:has(.panel-fig-kw-slope-tangent:hover, .panel-fig-kw-slope-tangent:focus-visible) .fig-tangent {
+  stroke: var(--accent);
+  stroke-width: 1.35;
+  stroke-dasharray: none;
+}
+
+.panel:has(.panel-fig-kw-slope-tangent:hover, .panel-fig-kw-slope-tangent:focus-visible) .fig-point-q,
+.panel:has(.panel-fig-kw-slope-tangent:hover, .panel-fig-kw-slope-tangent:focus-visible) .fig-label-q {
+  fill: var(--accent);
+}
+
+.panel-body .katex {
+  font-size: 0.95em;
+  color: var(--ink);
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.panel-figure {
+  margin: 0;
+  padding: 0.3rem 0.45rem 0.4rem;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background: var(--paper-figure);
+  border-top: var(--panel-rule-width) solid var(--panel-rule);
+  min-height: 0;
+  overflow: visible;
+  position: relative;
+  z-index: 0;
+}
+
+.panel-figure:hover {
+  z-index: 1;
+}
+
+.panel-figure-svg {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  display: block;
+  transform-origin: center center;
+  transition: transform 0.22s ease;
+}
+
+.panel-figure:hover .panel-figure-svg {
+  transform: scale(1.02);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel[data-panel] {
+    transition: none;
+  }
+
+  .panel[data-panel] > :is(.panel-text, .panel-figure) {
+    transition: none;
+  }
+
+  .panel-figure-svg,
+  .panel:has(.panel-fig-kw-straight) .fig-secant,
+  .panel:has(.panel-fig-kw-straight) .fig-point-q,
+  .panel:has(.panel-fig-kw-straight) .fig-label-q,
+  .panel:has(.panel-fig-kw-straight) .fig-point-t,
+  .panel:has(.panel-fig-kw-straight) .fig-label-t,
+  .panel:has(.panel-fig-kw-dydx) .fig-secant,
+  .panel:has(.panel-fig-kw-dydx) .fig-label-dx,
+  .panel:has(.panel-fig-kw-dydx) .fig-label-dy,
+  .panel:has(.panel-fig-kw-dydx) .fig-dydx-fraction-bar,
+  .panel:has(.panel-fig-kw-line-qt) .fig-secant-produced-part,
+  .panel:has(.panel-fig-kw-touch) .fig-secant-produced-part,
+  .panel:has(.panel-fig-kw-touch) .fig-secant-limit,
+  .panel:has(.panel-fig-kw-touch) .fig-dx,
+  .panel:has(.panel-fig-kw-touch) .fig-dy,
+  .panel:has(.panel-fig-kw-touch) .fig-point-q,
+  .panel:has(.panel-fig-kw-touch) .fig-label-q,
+  .panel:has(.panel-fig-kw-touch) .fig-point-t,
+  .panel:has(.panel-fig-kw-touch) .fig-label-t,
+  .panel:has(.panel-fig-kw-touch) .fig-label-dx0,
+  .panel:has(.panel-fig-kw-slope-tangent) .fig-point-q,
+  .panel:has(.panel-fig-kw-slope-tangent) .fig-label-q,
+  .panel:has(.panel-fig-kw-slope-tangent) .fig-tangent {
+    transition: none;
+  }
+
+  .panel-figure:hover .panel-figure-svg {
+    transform: none;
+  }
+
+  .panel-body .math.math-fig-dx::after,
+  .panel-body .math.math-fig-dy::after,
+  .panel-body .panel-fig-kw::after {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.chapter-copy {
+  width: min(44rem, 100%);
+  margin: 2.75rem auto 0;
+  font-size: 1.08rem;
+  line-height: 1.68;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.chapter-section {
+  margin: 0 0 1.35rem;
+}
+
+.chapter-section h2 {
+  margin: 2.2rem 0 0.55rem;
+  font-family: var(--display-font);
+  font-size: 1.18rem;
+  font-weight: 400;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.chapter-section p {
+  margin: 0 0 0.85rem;
+}
+
+.chapter-fig {
+  width: 50%;
+  margin: 0.35rem auto 1.15rem;
+  background: var(--paper-figure);
+  border: none;
+  padding: 0.25rem 0.25rem 0.35rem;
+  overflow: hidden;
+  text-align: initial;
+  hyphens: none;
+  box-sizing: border-box;
+}
+
+.chapter-fig-label {
+  margin: 0 0 0.2rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.chapter-fig-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.static-fig-pair {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0.35rem auto 1.15rem;
+  align-items: stretch;
+  box-sizing: border-box;
+}
+
+.static-fig-pair .chapter-fig {
+  width: 100%;
+  margin: 0;
+  height: 100%;
+}
+
+@media (max-width: 640px) {
+  .chapter-fig {
+    width: 75%;
+  }
+
+  .static-fig-pair {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+}
+
+.chapter-note {
+  padding-left: 1rem;
+  border-left: 1px solid var(--rule);
+  font-size: 0.96em;
+}
+
+.math-display {
+  display: block;
+  margin: 0.85rem auto;
+  text-align: center;
+}
+
+.chapter-table {
+  width: 100%;
+  margin: 1rem 0 1.15rem;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.chapter-table th,
+.chapter-table td {
+  padding: 0.3rem 0.45rem;
+  border: 1px solid rgba(10, 10, 10, 0.22);
+  font-weight: 400;
+}
+
+.exercises ol,
+.answers ol {
+  margin: 0.75rem 0 0;
+  padding-left: 1.35rem;
+}
+
+.exercises li,
+.answers li {
+  margin: 0 0 0.7rem;
+}
+
+.twin-plots-interactive {
+  outline: none;
+}
+
+.twin-plots-interactive .tp-hint {
+  text-align: left;
+  hyphens: none;
+}
+
+.twin-plots-interactive .tp-table {
+  hyphens: none;
+}
+
+.twin-plots-interactive .tp-readout {
+  text-align: left;
+  hyphens: none;
+}
+
+.twin-plots-interactive > p {
+  text-align: justify;
+}
+
+@media (max-width: 720px) {
+  .twin-plots-interactive > p {
+    text-align: left;
+  }
+}
+
+.slope-morph-section {
+  width: min(54rem, 100%);
+  margin: 2.75rem auto 0;
+}

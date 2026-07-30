@@ -1,0 +1,176 @@
+@import "../tokens.css";
+@import "./slope-morph-ui.css";
+
+:root {
+  --paper: #fcfbf7;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: calc(14px * 1.15);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    "Times New Roman", Times, serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.sm-root {
+  width: min(calc(40vw * 1.15), 100% - 2rem);
+  max-width: 100%;
+  margin-inline: auto;
+  padding: 0;
+}
+
+/* Standalone denser layout overrides (chapter uses slope-morph-ui defaults). */
+.sm-sticky-stack {
+  justify-content: flex-start;
+  padding-top: 2rem;
+  padding-bottom: 0.5rem;
+  border-block: none;
+  box-shadow: 0 1px 0 rgba(10, 10, 10, 0.06);
+}
+
+.sm-header {
+  padding-top: 1rem;
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.65rem;
+}
+
+.sm-title {
+  margin: 0 0 0.3rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  text-align: left;
+}
+
+.sm-sub {
+  margin: 0;
+  font-size: 0.74rem;
+  color: var(--ink-soft);
+  text-align: left;
+  line-height: 1.6;
+}
+
+.sm-sub cite {
+  font-style: italic;
+}
+
+.sm-main-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.65rem;
+  flex: 0 0 auto;
+  grid-template-columns: unset;
+}
+
+.sm-narrative {
+  flex: 1 1 52%;
+  min-width: 0;
+  min-height: 8.5rem;
+  margin-bottom: 0;
+}
+
+.sm-narrative-block {
+  inset: unset;
+  left: 0;
+  right: 0;
+  top: 0;
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.sm-figure {
+  flex: 0 1 48%;
+  align-self: flex-start;
+}
+
+.sm-figure-wrap {
+  flex: 0 1 48%;
+  gap: 0.6rem;
+}
+
+.sm-figure-inner {
+  aspect-ratio: 440 / 280;
+}
+
+.sm-slope-pills {
+  gap: 0.42rem;
+}
+
+.sm-slope-pill {
+  width: 2rem;
+  height: 2rem;
+  padding: 0.07rem;
+}
+
+.sm-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.66rem;
+}
+
+.sm-driver {
+  height: 180vh;
+}
+
+.sm-footer {
+  margin-top: 1.25rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.sm-footer a {
+  color: var(--ink-soft);
+}
+
+@media (max-width: 700px) {
+  .sm-root {
+    width: min(90vw, 24rem);
+  }
+
+  .sm-main-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .sm-narrative {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .sm-figure {
+    flex: 0 0 auto;
+  }
+
+  .sm-figure-wrap {
+    flex: 0 0 auto;
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .sm-slope-pills {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .sm-figure-inner {
+    max-width: 100%;
+    width: 100%;
+  }
+}

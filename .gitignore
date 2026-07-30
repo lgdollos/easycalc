@@ -1,0 +1,50 @@
+# Prototypes
+/lab/
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Vite cache
+.vite/
+
+# Logs
+*.log
+bun-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor / local tooling
+.idea/
+.vscode/
+*.swp
+*.swo
+.claude/
+.cursor/
+
+# Local overrides
+*.local
+
+# Design scratch (tldraw, etc.)
+*.tldr
+
+# Test / coverage
+coverage/
+
+# Optional deploy metadata
+.vercel/
+.netlify/

@@ -1,0 +1,28 @@
+@font-face {
+  font-family: "Sylvanus Libertine";
+  src: url("./assets/fonts/Libertine.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Sylvanus Essays";
+  src: url("./assets/fonts/Essays_1743.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --paper: #fffefd;
+  --paper-figure: #fffdfa;
+  --ink: #0a0a0a;
+  --ink-soft: #1a1a1a;
+  --rule: #000000;
+  --accent: #b12322;
+  --accent-highlight: color-mix(in srgb, var(--accent) 14%, transparent);
+  --body-font: "Sylvanus Libertine", "Linux Libertine", "Iowan Old Style", "Palatino Linotype",
+    Palatino, "Book Antiqua", Georgia, "Times New Roman", Times, serif;
+  --display-font: "Sylvanus Essays", "Sylvanus Libertine", "Iowan Old Style", Georgia, serif;
+}

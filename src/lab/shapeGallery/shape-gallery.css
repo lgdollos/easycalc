@@ -1,0 +1,234 @@
+@import "../../tokens.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 15px;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body-font);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.sg-root {
+  width: min(52rem, 100% - 2rem);
+  margin-inline: auto;
+  padding: 2rem 0 3rem;
+}
+
+.sg-header {
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 1rem;
+}
+
+.sg-title {
+  margin: 0 0 0.3rem;
+  font-family: var(--display-font);
+  font-size: 1.35rem;
+  font-weight: 400;
+}
+
+.sg-sub {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.sg-sub cite {
+  font-style: italic;
+}
+
+.sg-intro {
+  margin: 0 0 1.1rem;
+  font-size: 0.92rem;
+  max-width: 40rem;
+}
+
+.sg-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 1.25rem;
+}
+
+.sg-thumb {
+  appearance: none;
+  margin: 0;
+  padding: 0.35rem 0.4rem 0.3rem;
+  background: var(--paper-figure);
+  border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+  border-radius: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  min-width: 4.6rem;
+  color: var(--ink);
+  font-family: var(--body-font);
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.sg-thumb:hover,
+.sg-thumb:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.sg-thumb[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent-highlight);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.sg-thumb-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.01em;
+}
+
+.sg-thumb-svg {
+  display: block;
+  width: 72px;
+  height: 48px;
+}
+
+.sg-main-row {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.sg-caption {
+  flex: 1 1 42%;
+  min-width: 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.sg-caption p {
+  margin: 0;
+}
+
+.sg-figure-wrap {
+  flex: 1 1 58%;
+  min-width: 0;
+  position: relative;
+  background: var(--paper-figure);
+  border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  padding: 0.5rem;
+  cursor: ew-resize;
+  touch-action: none;
+  user-select: none;
+}
+
+.sg-stage-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 320px;
+}
+
+.sg-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.sg-scrub-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1 1 14rem;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.sg-scrub {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.sg-readout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.85rem;
+  font-size: 0.88rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.sg-sign-chip {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+  background: var(--paper-figure);
+}
+
+.sg-sign-chip[data-sign="neg"] {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--ink));
+  color: var(--accent);
+}
+
+.sg-sign-chip[data-sign="zero"] {
+  border-color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 6%, var(--paper));
+}
+
+.sg-sign-chip[data-sign="pos"] {
+  border-color: color-mix(in srgb, var(--ink) 40%, transparent);
+}
+
+.sg-sign-chip[data-sign="inf"] {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-highlight);
+}
+
+.sg-footer {
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+
+.sg-footer a {
+  color: var(--ink);
+}
+
+.sg-footer p {
+  margin: 0;
+}
+
+@media (max-width: 720px) {
+  .sg-main-row {
+    flex-direction: column;
+  }
+
+  .sg-figure-wrap {
+    cursor: ew-resize;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-thumb {
+    transition: none;
+  }
+}
