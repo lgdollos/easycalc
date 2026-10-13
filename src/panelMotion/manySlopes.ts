@@ -1,8 +1,14 @@
 import type { MountFor } from "../figures/figureMount";
 import { accentFromCss } from "../motion/accent";
-import type { MotionCleanup } from "../motion/createHoverMotion";
-import { prefersReducedMotion } from "../motion/reducedMotion";
+import {
+  KW_ACTIVE_CLASS,
+  MOTION_ACTIVE_CLASS,
+  PANEL_MOTION_STOP_EVENT,
+  type MotionCleanup,
+} from "../motion/createHoverMotion";
+import { skipHoverMotion } from "../motion/reducedMotion";
 import { cancelAllAnimations, cssVarRoot } from "../motion/figureUtils";
+import { bindTap, hasFineHover, isRecentTouch } from "../ui/pointerMode";
 
 const DRAW_MS = 520;
 const LINE_EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
@@ -19,7 +25,7 @@ export function attachManySlopesMotion(
   panel: HTMLElement,
   mount: MountFor["manySlopes"],
 ): MotionCleanup {
-  if (prefersReducedMotion()) return () => undefined;
+  if (skipHoverMotion()) return () => undefined;
 
   const slopesEl = panel.querySelector<HTMLElement>(".panel-fig-kw-slopes");
   const { manyOverlays: overlays, manyEndpoints: endpoints, manyLabels: labels } = mount.els;
@@ -30,13 +36,18 @@ export function attachManySlopesMotion(
   const accentColor = accentFromCss();
 
   let panelPointerInside = false;
+  let slopesAccentLatched = false;
   let activeLatch = false;
   let lastSlopesAccentWhileActive = false;
   let cycleGen = 0;
   let runAbort: AbortController | null = null;
   let sequenceDepth = 0;
 
-  const slopesAccentActive = (): boolean => slopesEl.matches(":hover, :focus-visible");
+  const slopesAccentActive = (): boolean =>
+    hasFineHover()
+      ? slopesEl.matches(":hover, :focus-visible")
+      : slopesAccentLatched ||
+        (document.activeElement === slopesEl && slopesEl.matches(":focus-visible"));
   const slopesFocusedVisible = (): boolean =>
     document.activeElement === slopesEl && slopesEl.matches(":focus-visible");
   const motionActive = (): boolean => panelPointerInside || slopesFocusedVisible();
@@ -132,7 +143,7 @@ export function attachManySlopesMotion(
     cancelRun();
   };
 
-  async function playSequence(gen: number): Promise<void> {
+  const playSequence = async (gen: number): Promise<void> => {
     sequenceDepth++;
     try {
       const seqAccent = slopesAccentActive();
@@ -181,8 +192,18 @@ export function attachManySlopesMotion(
       }
     } finally {
       sequenceDepth--;
+      if (gen === cycleGen && !hasFineHover() && sequenceDepth === 0) {
+        panelPointerInside = false;
+        slopesAccentLatched = false;
+        slopesEl.classList.remove(KW_ACTIVE_CLASS);
+        panel.classList.remove(MOTION_ACTIVE_CLASS);
+        applyIdleStatic();
+        activeLatch = false;
+        lastSlopesAccentWhileActive = false;
+        panel.dispatchEvent(new Event(PANEL_MOTION_STOP_EVENT));
+      }
     }
-  }
+  };
 
   const reconcile = (): void => {
     const now = motionActive();
@@ -207,30 +228,53 @@ export function attachManySlopesMotion(
     lastSlopesAccentWhileActive = now ? accent : false;
   };
 
-  const onPanelEnter = (): void => {
+  const isMouseHover = (e: PointerEvent): boolean =>
+    e.pointerType === "mouse" && hasFineHover() && !isRecentTouch();
+
+  const onPanelEnter = (e: PointerEvent): void => {
+    if (!isMouseHover(e)) return;
     panelPointerInside = true;
     reconcile();
   };
-  const onPanelLeave = (): void => {
+  const onPanelLeave = (e: PointerEvent): void => {
+    if (!isMouseHover(e)) return;
     panelPointerInside = false;
+    reconcile();
+  };
+  const onSlopesPointer = (e: PointerEvent): void => {
+    if (!isMouseHover(e)) return;
     reconcile();
   };
   panel.addEventListener("pointerenter", onPanelEnter, { passive: true });
   panel.addEventListener("pointerleave", onPanelLeave, { passive: true });
   slopesEl.addEventListener("focusin", reconcile);
   slopesEl.addEventListener("focusout", reconcile);
-  slopesEl.addEventListener("pointerenter", reconcile, { passive: true });
-  slopesEl.addEventListener("pointerleave", reconcile, { passive: true });
+  slopesEl.addEventListener("pointerenter", onSlopesPointer, { passive: true });
+  slopesEl.addEventListener("pointerleave", onSlopesPointer, { passive: true });
+
+  const unTap = bindTap(panel, (e) => {
+    const onKw = e.target instanceof Node && (slopesEl === e.target || slopesEl.contains(e.target));
+    slopesAccentLatched = onKw;
+    slopesEl.classList.toggle(KW_ACTIVE_CLASS, onKw);
+    panel.classList.add(MOTION_ACTIVE_CLASS);
+    panelPointerInside = true;
+    activeLatch = false;
+    reconcile();
+  });
+
   applyIdleStatic();
 
   return () => {
     bumpCycle();
     applyIdleStatic();
+    unTap();
+    panel.classList.remove(MOTION_ACTIVE_CLASS);
+    slopesEl.classList.remove(KW_ACTIVE_CLASS);
     panel.removeEventListener("pointerenter", onPanelEnter);
     panel.removeEventListener("pointerleave", onPanelLeave);
     slopesEl.removeEventListener("focusin", reconcile);
     slopesEl.removeEventListener("focusout", reconcile);
-    slopesEl.removeEventListener("pointerenter", reconcile);
-    slopesEl.removeEventListener("pointerleave", reconcile);
+    slopesEl.removeEventListener("pointerenter", onSlopesPointer);
+    slopesEl.removeEventListener("pointerleave", onSlopesPointer);
   };
 }

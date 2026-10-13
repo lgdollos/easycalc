@@ -9,8 +9,9 @@ import {
   type LineSnap,
 } from "../motion/figureUtils";
 import { accentFromCss } from "../motion/accent";
+import { bindFlagHovers } from "../motion/bindFlagHovers";
 import { createHoverMotion, type MotionCleanup } from "../motion/createHoverMotion";
-import { prefersReducedMotion } from "../motion/reducedMotion";
+import { skipHoverMotion } from "../motion/reducedMotion";
 import {
   runTriangleCycle,
   triangleAtT,
@@ -37,7 +38,7 @@ export function attachLimitShrinkMotion(
   panel: HTMLElement,
   mount: MountFor["limitShrink"],
 ): MotionCleanup {
-  if (prefersReducedMotion()) return () => undefined;
+  if (skipHoverMotion()) return () => undefined;
 
   const {
     dx,
@@ -194,21 +195,17 @@ export function attachLimitShrinkMotion(
       requestAnimationFrame(tick);
     });
 
-  const onKwEnter = (): void => {
-    kwPointerInside = true;
-  };
-  const onKwLeave = (): void => {
-    kwPointerInside = false;
-  };
-  kw.addEventListener("pointerenter", onKwEnter, { passive: true });
-  kw.addEventListener("pointerleave", onKwLeave, { passive: true });
+  const unKw = bindFlagHovers([kw], (v) => {
+    kwPointerInside = v;
+  });
 
   const hoverCleanup = createHoverMotion({
     panel,
     activateOn: [kw],
-    onStart: async (signal) => {
+    onStart: async (signal, { playOnce }) => {
       await runTriangleCycle({
         signal,
+        playOnce,
         animate: runShrink,
       });
     },
@@ -217,8 +214,7 @@ export function attachLimitShrinkMotion(
 
   return () => {
     hoverCleanup();
-    kw.removeEventListener("pointerenter", onKwEnter);
-    kw.removeEventListener("pointerleave", onKwLeave);
+    unKw();
     colorSchemeMq.removeEventListener("change", onColorSchemeChange);
   };
 }

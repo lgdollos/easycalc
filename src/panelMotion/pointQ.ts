@@ -5,7 +5,7 @@ import { bindFlagHovers } from "../motion/bindFlagHovers";
 import type { MotionCleanup } from "../motion/createHoverMotion";
 import { createPointerPresence } from "../motion/createPointerPresence";
 import { createPointPulse, PULSE_PANEL, PULSE_Q_ACCENT } from "../motion/pointPulse";
-import { prefersReducedMotion } from "../motion/reducedMotion";
+import { skipHoverMotion } from "../motion/reducedMotion";
 
 const MARCH_MS = 1200;
 
@@ -13,7 +13,7 @@ export function attachPointQMotion(
   panel: HTMLElement,
   mount: MountFor["pointQ"],
 ): MotionCleanup {
-  if (prefersReducedMotion()) return () => undefined;
+  if (skipHoverMotion()) return () => undefined;
 
   const { projX, projY, pointQ, labelQ, tickX, tickY } = mount.els;
   const projLines = [projX, projY];

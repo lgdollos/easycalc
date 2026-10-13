@@ -183,6 +183,9 @@ body {
   background: var(--paper);
   min-height: 22rem;
   overflow: visible;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .panel[data-panel] {
@@ -200,8 +203,16 @@ body {
   --panel-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.panel-grid:has(.panel:hover)
-  .panel[data-panel]:not(:hover)
+@media (hover: hover) and (pointer: fine) {
+  .panel-grid:has(.panel:hover)
+    .panel[data-panel]:not(:hover)
+    > :is(.panel-text, .panel-figure) {
+    opacity: var(--panel-dim-opacity);
+  }
+}
+
+.panel-grid:has(.panel.is-motion-active)
+  .panel[data-panel]:not(.is-motion-active)
   > :is(.panel-text, .panel-figure) {
   opacity: var(--panel-dim-opacity);
 }
@@ -215,6 +226,7 @@ body {
   padding: 0.45rem 0.65rem 0.4rem;
   overflow-y: auto;
   min-height: 0;
+  touch-action: pan-y;
 }
 
 .panel-title {
@@ -324,11 +336,21 @@ body {
   vertical-align: middle;
 }
 
-.panel-body .math.math-fig-q:hover,
-.panel-body .math.math-fig-proj-x:hover,
-.panel-body .math.math-fig-proj-y:hover,
-.panel-body .math.math-fig-dx:hover,
-.panel-body .math.math-fig-dy:hover {
+@media (hover: hover) and (pointer: fine) {
+  .panel-body .math.math-fig-q:hover,
+  .panel-body .math.math-fig-proj-x:hover,
+  .panel-body .math.math-fig-proj-y:hover,
+  .panel-body .math.math-fig-dx:hover,
+  .panel-body .math.math-fig-dy:hover {
+    background-color: var(--accent-highlight);
+  }
+}
+
+.panel-body .math.math-fig-q.is-kw-active,
+.panel-body .math.math-fig-proj-x.is-kw-active,
+.panel-body .math.math-fig-proj-y.is-kw-active,
+.panel-body .math.math-fig-dx.is-kw-active,
+.panel-body .math.math-fig-dy.is-kw-active {
   background-color: var(--accent-highlight);
 }
 
@@ -355,8 +377,14 @@ body {
   animation: panel-fig-math-underline-in 0.5s ease-out forwards;
 }
 
-.panel-body .panel-fig-kw:hover,
-.panel-body .panel-fig-kw:focus-visible {
+@media (hover: hover) and (pointer: fine) {
+  .panel-body .panel-fig-kw:hover {
+    background-color: var(--accent-highlight);
+  }
+}
+
+.panel-body .panel-fig-kw:focus-visible,
+.panel-body .panel-fig-kw.is-kw-active {
   background-color: var(--accent-highlight);
 }
 
@@ -389,15 +417,29 @@ body {
   transition: fill 0.2s ease;
 }
 
-.panel:has(.panel-fig-kw-straight:hover, .panel-fig-kw-straight:focus-visible) .fig-secant {
+@media (hover: hover) and (pointer: fine) {
+  .panel:has(.panel-fig-kw-straight:hover) .fig-secant {
+    stroke: var(--accent);
+    stroke-width: 2.5;
+  }
+
+  .panel:has(.panel-fig-kw-straight:hover) .fig-point-q,
+  .panel:has(.panel-fig-kw-straight:hover) .fig-label-q,
+  .panel:has(.panel-fig-kw-straight:hover) .fig-point-t,
+  .panel:has(.panel-fig-kw-straight:hover) .fig-label-t {
+    fill: var(--accent);
+  }
+}
+
+.panel:has(.panel-fig-kw-straight:focus-visible, .panel-fig-kw-straight.is-kw-active) .fig-secant {
   stroke: var(--accent);
   stroke-width: 2.5;
 }
 
-.panel:has(.panel-fig-kw-straight:hover, .panel-fig-kw-straight:focus-visible) .fig-point-q,
-.panel:has(.panel-fig-kw-straight:hover, .panel-fig-kw-straight:focus-visible) .fig-label-q,
-.panel:has(.panel-fig-kw-straight:hover, .panel-fig-kw-straight:focus-visible) .fig-point-t,
-.panel:has(.panel-fig-kw-straight:hover, .panel-fig-kw-straight:focus-visible) .fig-label-t {
+.panel:has(.panel-fig-kw-straight:focus-visible, .panel-fig-kw-straight.is-kw-active) .fig-point-q,
+.panel:has(.panel-fig-kw-straight:focus-visible, .panel-fig-kw-straight.is-kw-active) .fig-label-q,
+.panel:has(.panel-fig-kw-straight:focus-visible, .panel-fig-kw-straight.is-kw-active) .fig-point-t,
+.panel:has(.panel-fig-kw-straight:focus-visible, .panel-fig-kw-straight.is-kw-active) .fig-label-t {
   fill: var(--accent);
 }
 
@@ -425,16 +467,31 @@ body {
   transition: stroke 0.2s ease, stroke-width 0.2s ease, fill 0.2s ease;
 }
 
-.panel:has(.panel-fig-kw-dydx:hover, .panel-fig-kw-dydx:focus-visible) .fig-secant {
+@media (hover: hover) and (pointer: fine) {
+  .panel:has(.panel-fig-kw-dydx:hover) .fig-secant {
+    stroke: var(--accent);
+  }
+
+  .panel:has(.panel-fig-kw-dydx:hover) .fig-label-dx,
+  .panel:has(.panel-fig-kw-dydx:hover) .fig-label-dy {
+    fill: var(--accent);
+  }
+
+  .panel:has(.panel-fig-kw-dydx:hover) .fig-dydx-fraction-bar {
+    stroke: var(--accent);
+  }
+}
+
+.panel:has(.panel-fig-kw-dydx:focus-visible, .panel-fig-kw-dydx.is-kw-active) .fig-secant {
   stroke: var(--accent);
 }
 
-.panel:has(.panel-fig-kw-dydx:hover, .panel-fig-kw-dydx:focus-visible) .fig-label-dx,
-.panel:has(.panel-fig-kw-dydx:hover, .panel-fig-kw-dydx:focus-visible) .fig-label-dy {
+.panel:has(.panel-fig-kw-dydx:focus-visible, .panel-fig-kw-dydx.is-kw-active) .fig-label-dx,
+.panel:has(.panel-fig-kw-dydx:focus-visible, .panel-fig-kw-dydx.is-kw-active) .fig-label-dy {
   fill: var(--accent);
 }
 
-.panel:has(.panel-fig-kw-dydx:hover, .panel-fig-kw-dydx:focus-visible) .fig-dydx-fraction-bar {
+.panel:has(.panel-fig-kw-dydx:focus-visible, .panel-fig-kw-dydx.is-kw-active) .fig-dydx-fraction-bar {
   stroke: var(--accent);
 }
 
@@ -460,7 +517,14 @@ body {
   transition: stroke 0.2s ease, stroke-width 0.2s ease;
 }
 
-.panel:has(.panel-fig-kw-line-qt:hover, .panel-fig-kw-line-qt:focus-visible) .fig-secant-produced-part {
+@media (hover: hover) and (pointer: fine) {
+  .panel:has(.panel-fig-kw-line-qt:hover) .fig-secant-produced-part {
+    stroke: var(--accent);
+    stroke-width: 1.35;
+  }
+}
+
+.panel:has(.panel-fig-kw-line-qt:focus-visible, .panel-fig-kw-line-qt.is-kw-active) .fig-secant-produced-part {
   stroke: var(--accent);
   stroke-width: 1.35;
 }
@@ -493,19 +557,37 @@ body {
   transition: stroke 0.2s ease, stroke-width 0.2s ease, fill 0.2s ease;
 }
 
-.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-secant-produced-part,
-.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-secant-limit,
-.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-dx,
-.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-dy {
+@media (hover: hover) and (pointer: fine) {
+  .panel:has(.panel-fig-kw-touch:hover) .fig-secant-produced-part,
+  .panel:has(.panel-fig-kw-touch:hover) .fig-secant-limit,
+  .panel:has(.panel-fig-kw-touch:hover) .fig-dx,
+  .panel:has(.panel-fig-kw-touch:hover) .fig-dy {
+    stroke: var(--accent);
+    stroke-width: 1.35;
+  }
+
+  .panel:has(.panel-fig-kw-touch:hover) .fig-point-q,
+  .panel:has(.panel-fig-kw-touch:hover) .fig-label-q,
+  .panel:has(.panel-fig-kw-touch:hover) .fig-point-t,
+  .panel:has(.panel-fig-kw-touch:hover) .fig-label-t,
+  .panel:has(.panel-fig-kw-touch:hover) .fig-label-dx0 {
+    fill: var(--accent);
+  }
+}
+
+.panel:has(.panel-fig-kw-touch:focus-visible, .panel-fig-kw-touch.is-kw-active) .fig-secant-produced-part,
+.panel:has(.panel-fig-kw-touch:focus-visible, .panel-fig-kw-touch.is-kw-active) .fig-secant-limit,
+.panel:has(.panel-fig-kw-touch:focus-visible, .panel-fig-kw-touch.is-kw-active) .fig-dx,
+.panel:has(.panel-fig-kw-touch:focus-visible, .panel-fig-kw-touch.is-kw-active) .fig-dy {
   stroke: var(--accent);
   stroke-width: 1.35;
 }
 
-.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-point-q,
-.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-label-q,
-.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-point-t,
-.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-label-t,
-.panel:has(.panel-fig-kw-touch:hover, .panel-fig-kw-touch:focus-visible) .fig-label-dx0 {
+.panel:has(.panel-fig-kw-touch:focus-visible, .panel-fig-kw-touch.is-kw-active) .fig-point-q,
+.panel:has(.panel-fig-kw-touch:focus-visible, .panel-fig-kw-touch.is-kw-active) .fig-label-q,
+.panel:has(.panel-fig-kw-touch:focus-visible, .panel-fig-kw-touch.is-kw-active) .fig-point-t,
+.panel:has(.panel-fig-kw-touch:focus-visible, .panel-fig-kw-touch.is-kw-active) .fig-label-t,
+.panel:has(.panel-fig-kw-touch:focus-visible, .panel-fig-kw-touch.is-kw-active) .fig-label-dx0 {
   fill: var(--accent);
 }
 
@@ -527,14 +609,27 @@ body {
   transition: fill 0.2s ease, stroke 0.2s ease, stroke-width 0.2s ease;
 }
 
-.panel:has(.panel-fig-kw-slope-tangent:hover, .panel-fig-kw-slope-tangent:focus-visible) .fig-tangent {
+@media (hover: hover) and (pointer: fine) {
+  .panel:has(.panel-fig-kw-slope-tangent:hover) .fig-tangent {
+    stroke: var(--accent);
+    stroke-width: 1.35;
+    stroke-dasharray: none;
+  }
+
+  .panel:has(.panel-fig-kw-slope-tangent:hover) .fig-point-q,
+  .panel:has(.panel-fig-kw-slope-tangent:hover) .fig-label-q {
+    fill: var(--accent);
+  }
+}
+
+.panel:has(.panel-fig-kw-slope-tangent:focus-visible, .panel-fig-kw-slope-tangent.is-kw-active) .fig-tangent {
   stroke: var(--accent);
   stroke-width: 1.35;
   stroke-dasharray: none;
 }
 
-.panel:has(.panel-fig-kw-slope-tangent:hover, .panel-fig-kw-slope-tangent:focus-visible) .fig-point-q,
-.panel:has(.panel-fig-kw-slope-tangent:hover, .panel-fig-kw-slope-tangent:focus-visible) .fig-label-q {
+.panel:has(.panel-fig-kw-slope-tangent:focus-visible, .panel-fig-kw-slope-tangent.is-kw-active) .fig-point-q,
+.panel:has(.panel-fig-kw-slope-tangent:focus-visible, .panel-fig-kw-slope-tangent.is-kw-active) .fig-label-q {
   fill: var(--accent);
 }
 
@@ -559,7 +654,17 @@ body {
   z-index: 0;
 }
 
-.panel-figure:hover {
+@media (hover: hover) and (pointer: fine) {
+  .panel-figure:hover {
+    z-index: 1;
+  }
+
+  .panel-figure:hover .panel-figure-svg {
+    transform: scale(1.02);
+  }
+}
+
+.panel.is-motion-active .panel-figure {
   z-index: 1;
 }
 
@@ -570,9 +675,11 @@ body {
   display: block;
   transform-origin: center center;
   transition: transform 0.22s ease;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
-.panel-figure:hover .panel-figure-svg {
+.panel.is-motion-active .panel-figure-svg {
   transform: scale(1.02);
 }
 
@@ -611,7 +718,8 @@ body {
     transition: none;
   }
 
-  .panel-figure:hover .panel-figure-svg {
+  .panel-figure:hover .panel-figure-svg,
+  .panel.is-motion-active .panel-figure-svg {
     transform: none;
   }
 

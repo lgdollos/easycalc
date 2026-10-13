@@ -110,12 +110,14 @@ export function rafEaseProgress(
 
 /**
  * Grow/shrink loop: animate → optional afterAnim → hold → repeat until abort.
+ * `playOnce` runs a single cycle then returns.
  */
 export async function runTriangleCycle(opts: {
   signal: AbortSignal;
   animate: (signal: AbortSignal) => Promise<void>;
   afterAnim?: (signal: AbortSignal) => Promise<void>;
   holdMs?: number;
+  playOnce?: boolean;
 }): Promise<void> {
   const holdMs = opts.holdMs ?? TRIANGLE_HOLD_MS;
   while (!opts.signal.aborted) {
@@ -140,5 +142,6 @@ export async function runTriangleCycle(opts: {
     } catch {
       break;
     }
+    if (opts.playOnce) break;
   }
 }

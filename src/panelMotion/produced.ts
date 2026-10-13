@@ -8,7 +8,7 @@ import {
   type LineSnap,
 } from "../motion/figureUtils";
 import { createHoverMotion, type MotionCleanup } from "../motion/createHoverMotion";
-import { prefersReducedMotion } from "../motion/reducedMotion";
+import { skipHoverMotion } from "../motion/reducedMotion";
 
 const HIDE_MS = 220;
 const DRAW_MS = 1020;
@@ -64,7 +64,7 @@ export function attachProducedMotion(
   panel: HTMLElement,
   mount: MountFor["produced"],
 ): MotionCleanup {
-  if (prefersReducedMotion()) return () => undefined;
+  if (skipHoverMotion()) return () => undefined;
 
   const parts = [...mount.els.produced];
   const restSnaps = parts.map(readLineSnap);
@@ -73,10 +73,10 @@ export function attachProducedMotion(
   return createHoverMotion({
     panel,
     activateOn: kw ? [kw] : [],
-    onStart: async (signal) => {
+    onStart: async (signal, { playOnce }) => {
       while (!signal.aborted) {
         await playFigureHover(parts, restSnaps, signal);
-        if (signal.aborted) break;
+        if (signal.aborted || playOnce) break;
         try {
           await pauseMs(BETWEEN_CYCLES_MS, signal);
         } catch {

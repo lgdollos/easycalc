@@ -1,5 +1,6 @@
 import "./table-difference.css";
 import { f, fp } from "../../figures/coords";
+import { hoverOrTapLabel, subscribeFineHover } from "../../ui/pointerMode";
 
 type Point = {
   x: number;
@@ -237,7 +238,7 @@ function buildApp(root: HTMLElement) {
           <div class="td-panel-copy">
             <span>Prototype 1</span>
             <h2>Same x, two heights</h2>
-            <p>Hover a table column. The same x lights up on the y curve and on the derivative curve.</p>
+            <p data-td-hint="column">Hover a table column. The same x lights up on the y curve and on the derivative curve.</p>
           </div>
           <div class="td-table-slot"></div>
           <div class="td-two-graphs">
@@ -266,7 +267,7 @@ function buildApp(root: HTMLElement) {
           <div class="td-panel-copy">
             <span>Prototype 3</span>
             <h2>Slope cards</h2>
-            <p>A fast drill: each x gets a number and a tiny line with that steepness. Hover any card.</p>
+            <p data-td-hint="card">A fast drill: each x gets a number and a tiny line with that steepness. Hover any card.</p>
           </div>
           <div class="td-card-row"></div>
           <div class="td-needle-box" aria-hidden="true">
@@ -286,6 +287,20 @@ function buildApp(root: HTMLElement) {
   buildSlopeCards(root);
   attachEvents(root);
   setActiveX(root, 2);
+
+  const columnHint = root.querySelector<HTMLElement>('[data-td-hint="column"]');
+  const cardHint = root.querySelector<HTMLElement>('[data-td-hint="card"]');
+  const syncHints = (): void => {
+    const verb = hoverOrTapLabel();
+    if (columnHint) {
+      columnHint.textContent = `${verb} a table column. The same x lights up on the y curve and on the derivative curve.`;
+    }
+    if (cardHint) {
+      cardHint.textContent = `A fast drill: each x gets a number and a tiny line with that steepness. ${verb} any card.`;
+    }
+  };
+  syncHints();
+  subscribeFineHover(syncHints);
 }
 
 const app = document.querySelector<HTMLElement>("#difference-app");

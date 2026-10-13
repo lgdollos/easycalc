@@ -1,4 +1,5 @@
 import "./hover-guide.css";
+import { hoverOrTapLabel, subscribeFineHover } from "./pointerMode";
 
 export type HoverGuideInteraction = "drag" | "hover" | "scroll";
 
@@ -44,6 +45,30 @@ const PLACEMENT_CLASS: Record<NonNullable<AttachHoverGuideOptions["placement"]>,
   inline: "hover-guide--inline",
 };
 
+const hoverLabelEls = new Set<HTMLElement>();
+let hoverLabelUnsub: (() => void) | null = null;
+
+function labelFor(interaction: HoverGuideInteraction): string {
+  if (interaction === "hover") return hoverOrTapLabel();
+  return LABELS[interaction];
+}
+
+function syncHoverLabels(): void {
+  const text = hoverOrTapLabel();
+  for (const el of hoverLabelEls) {
+    if (!el.isConnected) hoverLabelEls.delete(el);
+    else el.textContent = text;
+  }
+}
+
+function trackHoverLabel(el: HTMLElement): void {
+  hoverLabelEls.add(el);
+  if (hoverLabelUnsub) return;
+  hoverLabelUnsub = subscribeFineHover(() => {
+    syncHoverLabels();
+  });
+}
+
 export function createHoverGuide(
   interaction: HoverGuideInteraction,
   options: AttachHoverGuideOptions = {},
@@ -54,7 +79,11 @@ export function createHoverGuide(
   el.className = extra ? `hover-guide ${extra}` : "hover-guide";
   el.dataset.interaction = interaction;
   el.setAttribute("aria-hidden", "true");
-  el.innerHTML = `${ICONS[interaction]}<span class="hover-guide-label">${LABELS[interaction]}</span>`;
+  el.innerHTML = `${ICONS[interaction]}<span class="hover-guide-label">${labelFor(interaction)}</span>`;
+  if (interaction === "hover") {
+    const label = el.querySelector<HTMLElement>(".hover-guide-label");
+    if (label) trackHoverLabel(label);
+  }
   return el;
 }
 

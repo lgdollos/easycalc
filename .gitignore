@@ -48,3 +48,7 @@ coverage/
 # Optional deploy metadata
 .vercel/
 .netlify/
+fly.toml
+Dockerfile
+.dockerignore
+nginx.conf

@@ -13,7 +13,7 @@ function buildApp(root: HTMLElement) {
     <div class="sm-sticky-stack">
       <header class="sm-header">
         <h1 class="sm-title">Geometrical meaning of differentiation</h1>
-        <p class="sm-sub">From Sylvanus P. Thompson, <cite>Calculus Made Easy</cite> — Chapter X.</p>
+        <p class="sm-sub">From Silvanus P. Thompson, <cite>Calculus Made Easy</cite> — Chapter X.</p>
       </header>
       <div class="sm-main-row">
         <div class="sm-narrative" id="sm-narrative" data-phase="0" aria-live="polite">

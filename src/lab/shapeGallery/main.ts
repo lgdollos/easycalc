@@ -51,7 +51,7 @@ function buildApp(root: HTMLElement) {
   root.innerHTML = `
     <header class="sg-header">
       <h1 class="sg-title">How slope changes along a curve</h1>
-      <p class="sg-sub">From Sylvanus P. Thompson, <cite>Calculus Made Easy</cite> — Chapter X, Figures 12–18.</p>
+      <p class="sg-sub">From Silvanus P. Thompson, <cite>Calculus Made Easy</cite> — Chapter X, Figures 12–18.</p>
     </header>
     <p class="sg-intro">
       Pick a shape, then scrub along it. The red line is the tangent; its steepness is

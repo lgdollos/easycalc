@@ -1,6 +1,7 @@
 import { POINTS, dTipFor } from "./model";
 import { createFig23, createFig24 } from "./renderPlots";
 import { attachHoverGuide } from "../ui/hoverGuide";
+import { hoverOrTapLabel, subscribeFineHover } from "../ui/pointerMode";
 import { renderMathIn } from "../ui/renderMath";
 
 /** Linked table + Figures 23/24 + readout. Shared by main chapter and twin-plots prototype. */
@@ -62,8 +63,14 @@ export function buildTwinPlotsInteractive(): HTMLElement {
   const hintRow = host.querySelector<HTMLElement>(".tp-hint-row")!;
   const hint = document.createElement("p");
   hint.className = "tp-hint";
-  hint.textContent =
-    "Hover a table column, or move across either figure — table, Figure 23, and Figure 24 stay linked.";
+  const syncHint = (): void => {
+    hint.textContent =
+      hoverOrTapLabel() === "Hover"
+        ? "Hover a table column, or move across either figure — table, Figure 23, and Figure 24 stay linked."
+        : "Tap a table column, or tap either figure — table, Figure 23, and Figure 24 stay linked.";
+  };
+  syncHint();
+  subscribeFineHover(syncHint);
   const hintGuide = attachHoverGuide(hintRow, "hover", { placement: "inline" });
   hintRow.appendChild(hint);
   hintRow.prepend(hintGuide.el);

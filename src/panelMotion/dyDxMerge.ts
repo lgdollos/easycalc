@@ -13,7 +13,7 @@ import {
   type PointSnap,
 } from "../motion/figureUtils";
 import { createHoverMotion, type MotionCleanup } from "../motion/createHoverMotion";
-import { prefersReducedMotion } from "../motion/reducedMotion";
+import { skipHoverMotion } from "../motion/reducedMotion";
 
 const MERGE_MS = 700;
 const REV_MS = 380;
@@ -26,7 +26,7 @@ export function attachDyDxMergeMotion(
   panel: HTMLElement,
   mount: MountFor["dyDxMerge"],
 ): MotionCleanup {
-  if (prefersReducedMotion()) return () => undefined;
+  if (skipHoverMotion()) return () => undefined;
 
   const { secant, fractionBar, labelDx, labelDy, labelQ, labelT, pointQ, pointT } = mount.els;
   const geom = mount.geom;
@@ -46,7 +46,7 @@ export function attachDyDxMergeMotion(
   const tRRest = readCircleR(pointT);
 
   let rafId = 0;
-  let anim: { t0: number; u0: number; u1: number; dur: number } | null = null;
+  let anim: { t0: number; u0: number; u1: number; dur: number; done?: () => void } | null = null;
   let u = 0;
 
   const cancelRaf = (): void => {
@@ -102,23 +102,34 @@ export function attachDyDxMergeMotion(
     } else {
       u = anim.u1;
       applyState(u);
+      const done = anim.done;
       anim = null;
       rafId = 0;
+      done?.();
     }
   };
 
-  const startTo = (targetU: number): void => {
-    const u0 = u;
-    if (u0 === targetU) {
-      applyState(u0);
-      return;
-    }
-    cancelRaf();
-    const span = Math.abs(targetU - u0);
-    const full = targetU > u0 ? MERGE_MS : REV_MS;
-    anim = { t0: performance.now(), u0, u1: targetU, dur: Math.max(1, full * span) };
-    rafId = requestAnimationFrame(tick);
-  };
+  const startTo = (targetU: number): Promise<void> =>
+    new Promise((resolve) => {
+      const u0 = u;
+      if (u0 === targetU) {
+        applyState(u0);
+        resolve();
+        return;
+      }
+      anim?.done?.();
+      cancelRaf();
+      const span = Math.abs(targetU - u0);
+      const full = targetU > u0 ? MERGE_MS : REV_MS;
+      anim = {
+        t0: performance.now(),
+        u0,
+        u1: targetU,
+        dur: Math.max(1, full * span),
+        done: resolve,
+      };
+      rafId = requestAnimationFrame(tick);
+    });
 
   const kw = panel.querySelector<HTMLElement>(".panel-fig-kw-dydx");
   restoreRest();
@@ -126,11 +137,9 @@ export function attachDyDxMergeMotion(
   return createHoverMotion({
     panel,
     activateOn: kw ? [kw] : [],
-    onStart: () => {
-      startTo(1);
-    },
+    onStart: () => startTo(1),
     onStop: () => {
-      startTo(0);
+      void startTo(0);
     },
   });
 }

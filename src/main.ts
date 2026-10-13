@@ -31,7 +31,7 @@ function buildApp(root: HTMLElement): MotionCleanup {
   header.className = "site-header";
   header.innerHTML = `
     <h1>Geometrical meaning of differentiation</h1>
-    <p>From Sylvanus P. Thompson, <cite>Calculus Made Easy</cite> — Chapter X.</p>
+    <p>From Silvanus P. Thompson, <cite>Calculus Made Easy</cite> — Chapter X.</p>
   `;
 
   const grid = document.createElement("div");

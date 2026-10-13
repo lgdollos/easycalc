@@ -1,7 +1,7 @@
 import { circleEl } from "../figures/svgHelpers";
 import { ACCENT_FILL, ACCENT_STROKE_SOFT } from "./accent";
 
-const PULSE_MS = 3000;
+export const PULSE_MS = 3000;
 const RIPPLE_LAYERS = 3;
 const RIPPLE_OUTER_OPACITY_FLOOR = 0.2;
 const RIPPLE_STROKE_WIDTH_MIN = 0.52;

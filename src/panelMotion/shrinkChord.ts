@@ -1,6 +1,6 @@
 import type { MountFor } from "../figures/figureMount";
 import { createHoverMotion, type MotionCleanup } from "../motion/createHoverMotion";
-import { prefersReducedMotion } from "../motion/reducedMotion";
+import { skipHoverMotion } from "../motion/reducedMotion";
 import {
   applyTrianglePose,
   rafEaseProgress,
@@ -16,7 +16,7 @@ export function attachShrinkChordMotion(
   panel: HTMLElement,
   mount: MountFor["shrinkChord"],
 ): MotionCleanup {
-  if (prefersReducedMotion()) return () => undefined;
+  if (skipHoverMotion()) return () => undefined;
 
   const {
     dx,
@@ -98,9 +98,10 @@ export function attachShrinkChordMotion(
   return createHoverMotion({
     panel,
     activateOn: [kwEl],
-    onStart: async (signal) => {
+    onStart: async (signal, { playOnce }) => {
       await runTriangleCycle({
         signal,
+        playOnce,
         animate: async (sig) => {
           highlightBox.style.opacity = "0";
           await rafEaseProgress(TRIANGLE_GROW_MS, sig, (e) => {

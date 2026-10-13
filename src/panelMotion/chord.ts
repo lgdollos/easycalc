@@ -2,7 +2,7 @@ import type { MountFor } from "../figures/figureMount";
 import { ACCENT, ACCENT_STROKE_WIDTH } from "../motion/accent";
 import { bindFlagHovers } from "../motion/bindFlagHovers";
 import { createHoverMotion, type MotionCleanup } from "../motion/createHoverMotion";
-import { prefersReducedMotion } from "../motion/reducedMotion";
+import { skipHoverMotion } from "../motion/reducedMotion";
 import {
   applyTrianglePose,
   rafEaseProgress,
@@ -16,7 +16,7 @@ export function attachChordMotion(
   panel: HTMLElement,
   mount: MountFor["chord"],
 ): MotionCleanup {
-  if (prefersReducedMotion()) return () => undefined;
+  if (skipHoverMotion()) return () => undefined;
 
   const { dx, dy, secant, labelDx, labelDy, labelSecant, labelT, pointT, geom } = {
     ...mount.els,
@@ -66,9 +66,10 @@ export function attachChordMotion(
 
   const hoverCleanup = createHoverMotion({
     panel,
-    onStart: async (signal) => {
+    onStart: async (signal, { playOnce }) => {
       await runTriangleCycle({
         signal,
+        playOnce,
         animate: async (sig) => {
           await rafEaseProgress(TRIANGLE_GROW_MS, sig, (p) => {
             applyTrianglePose(
